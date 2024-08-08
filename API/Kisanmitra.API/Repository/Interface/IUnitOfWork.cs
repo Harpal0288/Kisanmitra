@@ -1,6 +1,6 @@
 ﻿namespace Kisanmitra.API.Repository.Interface
 {
-    public class IUnitOfWork
+    public interface IUnitOfWork
     {
         IQuery Query { get; set; }
     }
