@@ -2,6 +2,8 @@
 {
     public interface IUnitOfWork
     {
-        IQuery Query { get; set; }
+        IQuery Query { get; }
+
+        void Save();
     }
 }
