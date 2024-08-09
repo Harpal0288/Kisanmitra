@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Models.Entities;
@@ -36,9 +37,11 @@ public partial class TbFarmerEquipment
 
     [ForeignKey("EquipmentId")]
     [InverseProperty("TbFarmerEquipments")]
+    [JsonIgnore]
     public virtual TbEquipment Equipment { get; set; } = null!;
 
     [ForeignKey("FarmerId")]
     [InverseProperty("TbFarmerEquipments")]
+    [JsonIgnore]
     public virtual TbFarmer Farmer { get; set; } = null!;
 }
