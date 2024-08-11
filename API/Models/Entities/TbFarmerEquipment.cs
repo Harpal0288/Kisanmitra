@@ -26,22 +26,22 @@ public partial class TbFarmerEquipment
 
     [Column("inserted_by")]
     [StringLength(255)]
-    public string InsertedBy { get; set; } = null!;
+    public string? InsertedBy { get; set; } = null!;
 
     [Column("updated_date", TypeName = "datetime")]
     public DateTime UpdatedDate { get; set; }
 
     [Column("updated_by")]
     [StringLength(255)]
-    public string UpdatedBy { get; set; } = null!;
+    public string? UpdatedBy { get; set; } = null!;
 
     [ForeignKey("EquipmentId")]
     [InverseProperty("TbFarmerEquipments")]
     [JsonIgnore]
-    public virtual TbEquipment Equipment { get; set; } = null!;
+    public virtual TbEquipment? Equipment { get; set; } = null!;
 
     [ForeignKey("FarmerId")]
     [InverseProperty("TbFarmerEquipments")]
     [JsonIgnore]
-    public virtual TbFarmer Farmer { get; set; } = null!;
+    public virtual TbFarmer? Farmer { get; set; } = null!;
 }
