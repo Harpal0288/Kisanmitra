@@ -9,7 +9,7 @@ namespace Kisanmitra.API.Repository.Implementations
     {
         private readonly ApplicationDbContext _context;
 
-        public IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; private set; }
+        public IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {

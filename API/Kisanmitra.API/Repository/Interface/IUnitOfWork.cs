@@ -1,6 +1,4 @@
-﻿
-
-namespace Kisanmitra.API.Repository.Interface
+﻿namespace Kisanmitra.API.Repository.Interface
 {
     public interface IUnitOfWork
     {

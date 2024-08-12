@@ -1,14 +1,16 @@
 ﻿using Kisanmitra.API.Repository.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Models.Entities;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kisanmitra.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/kisan_mitra/farmer_library_resource")]
     [ApiController]
     public class FarmerLibraryResourceController : ControllerBase
     {
@@ -19,94 +21,172 @@ namespace Kisanmitra.API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet("get_all_resources")]
-        public IActionResult GetAllFarmerLibraryResources()
+        [HttpGet("GetFarmerLibraryResourcesPaged")]
+        public async Task<ActionResult<IEnumerable<TbFarmerLibraryResource>>> GetAllFarmerLibraryResource(int page = 1, int pageSize = 10)
         {
             try
             {
-                var resources = _unitOfWork.FarmerLibraryResourceRepository.GetAllResources();
-                if (resources == null)
+                var resource = await _unitOfWork.FarmerLibraryResourceRepository.GetAllFarmerLibraryResource(page, pageSize);
+                if (resource == null)
                 {
-                    return NotFound("Farmer library resources not found.");
+                    
+                    return NotFound(new { status = 404, messaage = "Farmer Resource data not found" });
                 }
-                return Ok(resources);
+                return Ok(new { status = 200, message = "Farmer Resource Fetched Successfully!", data = resource });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
 
-        [HttpPost("add_resource")]
-        public IActionResult CreateFarmerLibraryResource([FromBody] TbFarmerLibraryResource farmerLibraryResource)
+
+        [HttpGet("GetFarmerLibraryResourcesByfarmerid/{farmerId}")]
+        public async Task<ActionResult<TbFarmerLibraryResource>> GetFarmerLibraryResourceByFarmerId(string farmerId)
+        {
+            try
+            {
+                if (farmerId.IsNullOrEmpty())
+                {
+                    return BadRequest("Farmer ID is required.");
+                }
+
+                var farmerresource = await _unitOfWork.FarmerLibraryResourceRepository.GetFarmerLibraryResourceByFarmerId(farmerId);
+                if (farmerresource == null)
+                {
+                    return NotFound(new { status = 404, messaage = "No found" });
+                }
+
+                return Ok(new { status = 200, message = " Fetched Successfully!", data = farmerresource });
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound(new { status = 404, messaage = "No " });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
+            }
+        }
+        [HttpGet("getFarmerLibraryResourcesByid/{farmerId}&{FarmerResource}")]
+        public async Task<ActionResult<TbFarmerLibraryResource>> GetFarmerLibraryResourceById(string farmerId, string FarmerResource)
+        {
+            try
+            {
+                if (farmerId.IsNullOrEmpty())
+                {
+                    return BadRequest("Farmer ID is required.");
+                }
+
+                if (FarmerResource.IsNullOrEmpty())
+                {
+                    return BadRequest("Farmer Resource is required.");
+                }
+
+                var farmerre= await _unitOfWork.FarmerLibraryResourceRepository.GetResourceById(farmerId, FarmerResource);
+                if (farmerre == null)
+                {
+                    return NotFound(new { status = 404, messaage = "No Resource found for the specified farmer ID and Resource." });
+                }
+
+                return Ok(new { status = 200, message = "Farmer Resource Fetched Successfully!", data = farmerre });
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound(new { status = 404, messaage = "No Resource found for the specified farmer ID and Resource." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        [HttpPost("insert_farmerLibraryResource")]
+        public async Task<ActionResult> CreateFarmerLibraryResource([FromBody] TbFarmerLibraryResource farmerLibraryResource)
         {
             try
             {
                 if (farmerLibraryResource == null)
                 {
-                    return BadRequest("Farmer library resource data is required.");
+                    return BadRequest("Farmer Library Resource is required.");
                 }
-
-                _unitOfWork.FarmerLibraryResourceRepository.InsertResource(farmerLibraryResource);
-                _unitOfWork.Save();
-                return CreatedAtAction(nameof(GetAllFarmerLibraryResources), new { id = farmerLibraryResource.FarmerId }, farmerLibraryResource);
+                await _unitOfWork.FarmerLibraryResourceRepository.InsertFarmerLibraryResource(farmerLibraryResource);
+                return Ok(new { status = 201, message = "Farmer Library Resource added successfully." });
+            }
+            catch (InvalidOperationException)
+            {
+                return Conflict(new { status = 409, message = "Data already exists." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
-
-        [HttpPut("update_resource/{farmerId}/{farmerResource}")]
-        public IActionResult UpdateFarmerLibraryResource(string farmerId, string farmerResource, [FromBody] TbFarmerLibraryResource updatedResource)
+  
+        [HttpPut("update_resource/{farmerId}&{farmerResource}")]
+        public async Task<ActionResult> UpdateFarmerLibraryResource(string farmerId, string farmerResource, TbFarmerLibraryResource updatedResource)
         {
             try
             {
+                if (farmerId.IsNullOrEmpty())
+                {
+                    return BadRequest("Farmer ID is required.");
+                }
+
+                if (farmerResource.IsNullOrEmpty())
+                {
+                    return BadRequest("Resource is required.");
+                }
+
                 if (updatedResource == null)
                 {
-                    return BadRequest("Updated resource data is required.");
+                    return BadRequest("Farmer Resource data is required.");
                 }
 
-                var existingResource = _unitOfWork.FarmerLibraryResourceRepository.GetResourceById(farmerId, farmerResource);
-                if (existingResource == null)
+                if (farmerId != updatedResource.FarmerId && farmerResource != updatedResource.FarmerResource)
                 {
-                    return NotFound("Farmer library resource not found.");
+                    return BadRequest("Mismatched farmer ID or Resource .");
                 }
 
-                existingResource.FarmerResource = updatedResource.FarmerResource;
-                existingResource.InsertedBy = updatedResource.InsertedBy;
-                existingResource.UpdatedBy = updatedResource.UpdatedBy;
-
-                _unitOfWork.FarmerLibraryResourceRepository.UpdateResource(existingResource);
-                _unitOfWork.Save();
-
-                return NoContent();
+                await _unitOfWork.FarmerLibraryResourceRepository.UpdateFarmerLibraryResource(farmerId, farmerResource, updatedResource);
+                Log.Information("Farmer Resource updated successfully.");
+                return Ok(new { status = 200, message = "Farmer Resource updated successfully." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                Log.Error(ex, "An error occurred while updating farmer Resource");
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
 
+        //DELETE
         [HttpDelete("delete_resource/{farmerId}/{farmerResource}")]
-        public IActionResult DeleteFarmerLibraryResource(string farmerId, string farmerResource)
+        public async Task<ActionResult> deleteFarmerLibraryResource(string farmerId, string farmerResource)
         {
             try
             {
-                var existingResource = _unitOfWork.FarmerLibraryResourceRepository.GetResourceById(farmerId, farmerResource);
-                if (existingResource == null)
+                if (farmerId.IsNullOrEmpty())
                 {
-                    return NotFound("Farmer library resource not found.");
+                    return BadRequest("Farmer ID is required.");
                 }
 
-                _unitOfWork.FarmerLibraryResourceRepository.DeleteResource(farmerId, farmerResource);
-                _unitOfWork.Save();
+                if (farmerResource.IsNullOrEmpty())
+                {
+                    return BadRequest("Resource is required.");
+                }
 
-                return NoContent();
+                var result = await _unitOfWork.FarmerLibraryResourceRepository.DeleteFarmerLibraryResource(farmerId, farmerResource);
+
+                if (result == -1)
+                {
+                    return NotFound(new { status = 404, messaage = "No matching record found to delete." });
+                }
+
+                return Ok(new { status = 200, message = "Farmer Resource deleted successfully." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
     }

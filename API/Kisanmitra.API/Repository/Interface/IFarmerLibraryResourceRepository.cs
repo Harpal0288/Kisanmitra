@@ -5,11 +5,11 @@ namespace Kisanmitra.API.Repository.Interface
 {
     public interface IFarmerLibraryResourceRepository
     {
-        List<TbFarmerLibraryResource> GetAllResources();
-        TbFarmerLibraryResource GetResourceById(string farmerId, string farmerResource);
-        void InsertResource(TbFarmerLibraryResource farmerLibraryResource);
-        void UpdateResource(TbFarmerLibraryResource farmerLibraryResource);
-        void DeleteResource(string farmerId, string farmerResource);
-        List<TbFarmerLibraryResource> GetResourcesByFarmerId(string farmerId);
+        Task<IEnumerable<TbFarmerLibraryResource>> GetAllFarmerLibraryResource(int page, int pageSize);
+        Task<IEnumerable<TbFarmerLibraryResource>> GetFarmerLibraryResourceByFarmerId(string farmerId);
+        Task<IEnumerable<TbFarmerLibraryResource>> GetResourceById(string farmerId, string farmerResource);
+        Task InsertFarmerLibraryResource(TbFarmerLibraryResource FarmerLibraryResource);
+        Task UpdateFarmerLibraryResource(string farmerId, string farmerResource, TbFarmerLibraryResource FarmerLibraryResource);
+        Task<int> DeleteFarmerLibraryResource(string farmerId, string farmerResource);
     }
 }
