@@ -27,11 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="FluentValidation\" />
     <Folder Include="MappingConfig\" />
-    <Folder Include="Repository\Interface\" />
-    <Folder Include="Repository\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>
