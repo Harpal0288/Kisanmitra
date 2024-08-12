@@ -1,4 +1,6 @@
 using DataAccessLayer.DAL;
+using Kisanmitra.API.Repository.Implementations;
+using Kisanmitra.API.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -25,6 +27,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
