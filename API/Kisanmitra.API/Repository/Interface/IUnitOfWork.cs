@@ -3,7 +3,6 @@
     public interface IUnitOfWork
     {
         IQuery Query { get; }
-
         void Save();
     }
 }

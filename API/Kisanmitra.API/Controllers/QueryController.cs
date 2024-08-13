@@ -5,14 +5,20 @@ using Microsoft.Identity.Client;
 using Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Mapster;
+using Models.DTOs;
+using Serilog;
 
 namespace Kisanmitra.API.Controllers
 {
+    [ApiController]
+    [Route("KisanmitraApi/api/[controller]")]
     /// <summary>
     /// 
     /// </summary>
     public class QueryController : Controller
     {
+        
         private readonly IUnitOfWork _unitOfWork;
 
         public QueryController(IUnitOfWork unitOfWork)
@@ -24,67 +30,70 @@ namespace Kisanmitra.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("get_all_queries")]
-        public IActionResult GetAllQueries()
+        public async Task<ActionResult<IEnumerable<QueryDto>>> GetAllQueries(int page=1, int pageSize=10)
         {
             try
             {
-                var result = _unitOfWork.Query.GetAllQueries();
-                if (result == null)
-                {
-                    return NotFound("Query data not found");
-                }
-                return Ok(result);
+                var queries = await _unitOfWork.Query.GetAllQueries(page, pageSize);
+                var queryDtos = queries.Adapt<List<QueryDto>>();
+                _unitOfWork.Save();
+                return Ok(new { status = 200, message = "Queries Fetched Successfully!", data = queryDtos });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Interval Server Error: {ex.Message}");
+                Log.Error(ex, "An error occurred while fetching queries.");
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="query"></param>
+        /// <param name="queryDto"></param>
         /// <returns></returns>
         [HttpPost("add_query")]
-        public async Task<ActionResult<TbQuery>> InsertQuery([FromBody] TbQuery query)
+        public async Task<ActionResult<QueryDto>> CreateQuery([FromBody] QueryDto queryDto)
         {
             try
             {
-                if (query == null)
+                if (queryDto == null)
                 {
                     return BadRequest("Query data is required.");
                 }
+                var query = queryDto.Adapt<TbQuery>();
                 _unitOfWork.Query.InsertQuery(query);
                 _unitOfWork.Save();
-                return CreatedAtAction("GetAllQueries", new { id = query.QueryId }, query);
+                return CreatedAtAction("GetAllQueries", new { id = query.QueryId }, queryDto);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                Log.Error(ex, "An error occurred while inserting query.");
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="query"></param>
+        /// <param name="queryDto"></param>
         /// <returns></returns>
         [HttpPut("update_query")]
-        public async Task<ActionResult<TbQuery>> UpdateQuery([FromBody] TbQuery query)
+        public async Task<ActionResult<QueryDto>> UpdateQuery([FromBody] QueryDto queryDto)
         {
-            if (query == null)
+            if (queryDto == null)
             {
                 return BadRequest("Query object is null");
             }
 
             try
             {
+                var query = queryDto.Adapt<TbQuery>();
                 _unitOfWork.Query.UpdateQuery(query);
                 _unitOfWork.Save();
-                return NoContent();
+                return Ok(new { status = 200, message = "Query updated successfully." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                Log.Error(ex, "An error occurred while updating query.");
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
         /// <summary>
@@ -93,17 +102,18 @@ namespace Kisanmitra.API.Controllers
         /// <param name="queryId"></param>
         /// <returns></returns>
         [HttpDelete("delete_query")]
-        public IActionResult DeleteQuery(string queryId)
+        public async Task<ActionResult> DeleteQuery(string queryId)
         {
             try
             {
                 _unitOfWork.Query.DeleteQuery(queryId);
                 _unitOfWork.Save();
-                return NoContent();
+                return Ok(new { status = 200, message = "Query deleted successfully." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                Log.Error(ex, "An error occurred while deleting query.");
+                return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
     }
