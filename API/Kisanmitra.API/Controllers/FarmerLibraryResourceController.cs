@@ -1,4 +1,5 @@
-﻿using Kisanmitra.API.Repository.Interface;
+﻿
+using Kisanmitra.API.Repository.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,12 +17,22 @@ namespace Kisanmitra.API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FarmerLibraryResourceController"/> class.
+        /// </summary>
+        /// <param name="unitOfWork">The unit of work.</param>
         public FarmerLibraryResourceController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet("GetFarmerLibraryResourcesPaged")]
+        /// <summary>
+        /// Retrieves all farmer library resources with pagination.
+        /// </summary>
+        /// <param name="page">The page number for pagination.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <returns>A list of farmer library resources.</returns>
+        [HttpGet("get_all_farmer_library_resource")]
         public async Task<ActionResult<IEnumerable<TbFarmerLibraryResource>>> GetAllFarmerLibraryResource(int page = 1, int pageSize = 10)
         {
             try
@@ -29,19 +40,25 @@ namespace Kisanmitra.API.Controllers
                 var resource = await _unitOfWork.FarmerLibraryResourceRepository.GetAllFarmerLibraryResource(page, pageSize);
                 if (resource == null)
                 {
-                    
+                    Log.Warning("No Farmer Library Resources found");
                     return NotFound(new { status = 404, messaage = "Farmer Resource data not found" });
                 }
+                Log.Information("Farmer Library Resources fetched successfully");
                 return Ok(new { status = 200, message = "Farmer Resource Fetched Successfully!", data = resource });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "An error occurred while fetching Farmer Library Resources");
                 return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
 
-
-        [HttpGet("GetFarmerLibraryResourcesByfarmerid/{farmerId}")]
+        /// <summary>
+        /// Retrieves farmer library resources for a specific farmer by their ID.
+        /// </summary>
+        /// <param name="farmerId">The ID of the farmer.</param>
+        /// <returns>The farmer library resources.</returns>
+        [HttpGet("get_farmer_library_resource_by_farmer_id/{farmerId}")]
         public async Task<ActionResult<TbFarmerLibraryResource>> GetFarmerLibraryResourceByFarmerId(string farmerId)
         {
             try
@@ -54,21 +71,31 @@ namespace Kisanmitra.API.Controllers
                 var farmerresource = await _unitOfWork.FarmerLibraryResourceRepository.GetFarmerLibraryResourceByFarmerId(farmerId);
                 if (farmerresource == null)
                 {
-                    return NotFound(new { status = 404, messaage = "No found" });
+                    Log.Warning("No Farmer Library Resources found for the specified farmer ID.");
+                    return NotFound(new { status = 404, messaage = "No Farmer Library Resources found for the specified farmer ID." });
                 }
-
-                return Ok(new { status = 200, message = " Fetched Successfully!", data = farmerresource });
+                Log.Information("Farmer Library Resources fetched successfully");
+                return Ok(new { status = 200, message = "Farmer Library Resources Fetched Successfully!", data = farmerresource });
             }
             catch (InvalidOperationException)
             {
-                return NotFound(new { status = 404, messaage = "No " });
+                Log.Warning("No Farmer Library Resources found for the specified farmer ID.");
+                return NotFound(new { status = 404, messaage = "No Farmer Library Resources found for the specified farmer ID." });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "An error occurred while fetching Farmer Library Resources");
                 return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
-        [HttpGet("getFarmerLibraryResourcesByid/{farmerId}&{FarmerResource}")]
+
+        /// <summary>
+        /// Retrieves a specific farmer library resource by farmer ID and resource identifier.
+        /// </summary>
+        /// <param name="farmerId">The ID of the farmer.</param>
+        /// <param name="FarmerResource">The identifier of the farmer resource.</param>
+        /// <returns>The farmer library resource.</returns>
+        [HttpGet("get_farmer_library_resource_by_id/{farmerId}&{FarmerResource}")]
         public async Task<ActionResult<TbFarmerLibraryResource>> GetFarmerLibraryResourceById(string farmerId, string FarmerResource)
         {
             try
@@ -83,25 +110,33 @@ namespace Kisanmitra.API.Controllers
                     return BadRequest("Farmer Resource is required.");
                 }
 
-                var farmerre= await _unitOfWork.FarmerLibraryResourceRepository.GetResourceById(farmerId, FarmerResource);
+                var farmerre = await _unitOfWork.FarmerLibraryResourceRepository.GetResourceById(farmerId, FarmerResource);
                 if (farmerre == null)
                 {
+                    Log.Warning("No Farmer Library Resources found for the specified farmer ID and Resource.");
                     return NotFound(new { status = 404, messaage = "No Resource found for the specified farmer ID and Resource." });
                 }
-
+                Log.Information("Farmer Library Resources fetched successfully");
                 return Ok(new { status = 200, message = "Farmer Resource Fetched Successfully!", data = farmerre });
             }
             catch (InvalidOperationException)
             {
+                Log.Warning("No Farmer Library Resources found for the specified farmer ID and resource.");
                 return NotFound(new { status = 404, messaage = "No Resource found for the specified farmer ID and Resource." });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "An error occurred while fetching Farmer Library Resources");
                 return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
 
-        [HttpPost("insert_farmerLibraryResource")]
+        /// <summary>
+        /// Inserts a new farmer library resource into the database.
+        /// </summary>
+        /// <param name="farmerLibraryResource">The farmer library resource to be inserted.</param>
+        /// <returns>HTTP response indicating the result of the operation.</returns>
+        [HttpPost("insert_farmer_library_resource")]
         public async Task<ActionResult> CreateFarmerLibraryResource([FromBody] TbFarmerLibraryResource farmerLibraryResource)
         {
             try
@@ -111,19 +146,29 @@ namespace Kisanmitra.API.Controllers
                     return BadRequest("Farmer Library Resource is required.");
                 }
                 await _unitOfWork.FarmerLibraryResourceRepository.InsertFarmerLibraryResource(farmerLibraryResource);
+                Log.Information("Farmer Library Resources added successfully.");
                 return Ok(new { status = 201, message = "Farmer Library Resource added successfully." });
             }
             catch (InvalidOperationException)
             {
+                Log.Warning("Data already exists.");
                 return Conflict(new { status = 409, message = "Data already exists." });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "An error occurred while adding Farmer Library Resources");
                 return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
-  
-        [HttpPut("update_resource/{farmerId}&{farmerResource}")]
+
+        /// <summary>
+        /// Updates an existing farmer library resource in the database.
+        /// </summary>
+        /// <param name="farmerId">The ID of the farmer.</param>
+        /// <param name="farmerResource">The current identifier of the farmer resource to be updated.</param>
+        /// <param name="updatedResource">The updated farmer library resource details.</param>
+        /// <returns>HTTP response indicating the result of the operation.</returns>
+        [HttpPut("update_farmer_library_resource/{farmerId}&{farmerResource}")]
         public async Task<ActionResult> UpdateFarmerLibraryResource(string farmerId, string farmerResource, TbFarmerLibraryResource updatedResource)
         {
             try
@@ -159,8 +204,13 @@ namespace Kisanmitra.API.Controllers
             }
         }
 
-        //DELETE
-        [HttpDelete("delete_resource/{farmerId}/{farmerResource}")]
+        /// <summary>
+        /// Deletes a farmer library resource from the database.
+        /// </summary>
+        /// <param name="farmerId">The ID of the farmer.</param>
+        /// <param name="farmerResource">The identifier of the farmer resource to be deleted.</param>
+        /// <returns>HTTP response indicating the result of the operation.</returns>
+        [HttpDelete("delete_farmer_library_resource/{farmerId}/{farmerResource}")]
         public async Task<ActionResult> deleteFarmerLibraryResource(string farmerId, string farmerResource)
         {
             try
@@ -179,13 +229,15 @@ namespace Kisanmitra.API.Controllers
 
                 if (result == -1)
                 {
+                    Log.Warning("No matching record found to delete.");
                     return NotFound(new { status = 404, messaage = "No matching record found to delete." });
                 }
-
+                Log.Information("Farmer Library Resources deleted successfully.");
                 return Ok(new { status = 200, message = "Farmer Resource deleted successfully." });
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "An error occurred while deleting Farmer Library Resources");
                 return StatusCode(500, new { status = 500, message = "Internal server error", error = ex.Message });
             }
         }
