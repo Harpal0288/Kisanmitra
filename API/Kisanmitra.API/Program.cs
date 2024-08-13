@@ -3,6 +3,12 @@ using Kisanmitra.API.Repository.Implementations;
 using Kisanmitra.API.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Serilog.Events;
+using Serilog.AspNetCore;
+using Kisanmitra.API.Repository.Implementations;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Kisanmitra.API.Repository.Interface;
+using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +27,10 @@ builder.Host.UseSerilog();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add services to the container.
+builder.Services.AddScoped <IUnitOfWork , UnitOfWork>();
 
+// Add services to the container.
+TypeAdapterConfig.GlobalSettings.Scan(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
