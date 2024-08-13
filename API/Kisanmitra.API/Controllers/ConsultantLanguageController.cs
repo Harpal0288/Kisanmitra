@@ -11,18 +11,25 @@ namespace kisanmitra.API.Controllers
 {
     [Route("v1/api/kisan_mitar/consultant/consultant_language")]
     [ApiController]
-    
     public class ConsultantLanguageAPIController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        
 
+        /// <summary>
+        /// Initializes a new instance of the ConsultantLanguageAPIController class.
+        /// </summary>
+        /// <param name="unitOfWork">The unit of work to interact with the repository.</param>
         public ConsultantLanguageAPIController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        
+        /// <summary>
+        /// Gets a paginated list of all Consultant Languages.
+        /// </summary>
+        /// <param name="pageNumber">The page number for pagination.</param>
+        /// <param name="pageSize">The number of records per page.</param>
+        /// <returns>A list of Consultant Languages.</returns>
         [HttpGet("get_all_consultant_language")]
         public async Task<ActionResult<IEnumerable<TbConsultantLanguage>>> GetAllConsultantLanguages(int pageNumber = 1, int pageSize = 10)
         {
@@ -30,7 +37,8 @@ namespace kisanmitra.API.Controllers
             {
                 var consultantLanguage = await _unitOfWork.ConsultantLanguage.GetAllConsultantLanguage(pageNumber, pageSize);
 
-                if (consultantLanguage == null) {
+                if (consultantLanguage == null)
+                {
                     Log.Warning("No Consultant Language found");
                     return NotFound(new { status = 404, messaage = "Consultant Language data not found" });
                 }
@@ -44,14 +52,16 @@ namespace kisanmitra.API.Controllers
             }
         }
 
- 
+        /// <summary>
+        /// Gets a specific Consultant Language by Consultant ID.
+        /// </summary>
+        /// <param name="id">The Consultant ID.</param>
+        /// <returns>A specific Consultant Language.</returns>
         [HttpGet("get_consultant_language_by_id/{id}")]
         public async Task<ActionResult<TbConsultantLanguage>> GetConsultantLanguageById(string id)
         {
             try
             {
-              
-
                 if (id.IsNullOrEmpty())
                 {
                     return BadRequest("Consultant Id is required.");
@@ -68,7 +78,7 @@ namespace kisanmitra.API.Controllers
             }
             catch (InvalidOperationException)
             {
-                Log.Warning("No Consultant Language found for the specified Consultant ID..");
+                Log.Warning("No Consultant Language found for the specified Consultant ID.");
                 return NotFound(new { status = 404, messaage = "No Consultant Language found for the specified Consultant ID." });
             }
             catch (Exception ex)
@@ -78,6 +88,11 @@ namespace kisanmitra.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Inserts a new Consultant Language.
+        /// </summary>
+        /// <param name="consultantLanguage">The Consultant Language entity to insert.</param>
+        /// <returns>An action result indicating success or failure.</returns>
         [HttpPost("insert_consultant_language")]
         public async Task<ActionResult> CreateConsultantLanguage([FromBody] TbConsultantLanguage consultantLanguage)
         {
@@ -104,7 +119,13 @@ namespace kisanmitra.API.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Updates a specific Consultant Language.
+        /// </summary>
+        /// <param name="consultantId">The Consultant ID.</param>
+        /// <param name="consultantLanguage">The Consultant Language string.</param>
+        /// <param name="consultantLanguage1">The Consultant Language entity to update.</param>
+        /// <returns>An action result indicating success or failure.</returns>
         [HttpPut("update_consultant_language/{consultantId}&{consultantLanguage}")]
         public async Task<ActionResult> UpdateConsultantLanguages(string consultantId, string consultantLanguage, TbConsultantLanguage consultantLanguage1)
         {
@@ -119,8 +140,8 @@ namespace kisanmitra.API.Controllers
                 {
                     return BadRequest("Consultant Language is required.");
                 }
-               
-                await _unitOfWork.ConsultantLanguage.UpdateConsultantLanguage(consultantId,consultantLanguage,consultantLanguage1);
+
+                await _unitOfWork.ConsultantLanguage.UpdateConsultantLanguage(consultantId, consultantLanguage, consultantLanguage1);
                 Log.Information("Consultant Language updated successfully.");
                 return Ok(new { status = 200, message = "Consultant Language updated successfully." });
             }
@@ -131,7 +152,12 @@ namespace kisanmitra.API.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Deletes a specific Consultant Language.
+        /// </summary>
+        /// <param name="consultantId">The Consultant ID.</param>
+        /// <param name="consultantLanguage">The Consultant Language string.</param>
+        /// <returns>An action result indicating success or failure.</returns>
         [HttpDelete("delete_consultant_language/{consultantId}&{consultantLanguage}")]
         public async Task<ActionResult> deleteConsultantLanguage(string consultantId, string consutantLanguage)
         {
