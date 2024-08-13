@@ -5,7 +5,7 @@ using Models.Entities;
 
 namespace Kisanmitra.API.Repository.Implementations
 {
-    public class UnitOfWork:IUnitOfWork
+  
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
@@ -13,7 +13,7 @@ namespace Kisanmitra.API.Repository.Implementations
         public IConsultantCertification ConsultantCertification { get; }
         
 
-        public UnitOfWork(ApplicationDbContext context)
+       
         public UnitOfWork(ApplicationDbContext context, IConsultantCertification consultantcertification)
         {
             _context = context;
@@ -21,11 +21,12 @@ namespace Kisanmitra.API.Repository.Implementations
             ConsultantCertification = consultantcertification;
         }
 
-        }
-        // Implement Save method to match IUnitOfWork interface
         public void Save()
         {
             _context.SaveChanges();
         }
     }
-}
+        // Implement Save method to match IUnitOfWork interface
+       
+    }
+
