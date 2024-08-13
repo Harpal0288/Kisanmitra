@@ -3,6 +3,12 @@ using Kisanmitra.API.Repository.Implementations;
 using Kisanmitra.API.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Serilog.Events;
+using Serilog.AspNetCore;
+using Kisanmitra.API.Repository.Implementations;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Kisanmitra.API.Repository.Interface;
+using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +29,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register your repositories
 builder.Services.AddScoped<IConsultantCertification, ConsultantCertificationRepo>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-// Add services to the container
+TypeAdapterConfig.GlobalSettings.Scan(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 
 // Configure Swagger/OpenAPI

@@ -2,6 +2,8 @@
 {
     public interface IUnitOfWork
     {
+        IQuery Query { get; }
+
         IConsultantCertification ConsultantCertification { get; }
         void Save();
     }

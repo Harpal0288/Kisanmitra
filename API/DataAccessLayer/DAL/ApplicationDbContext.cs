@@ -315,4 +315,5 @@ namespace DataAccessLayer.DAL
 
             base.OnModelCreating(modelBuilder);
         }
+    }
 }
