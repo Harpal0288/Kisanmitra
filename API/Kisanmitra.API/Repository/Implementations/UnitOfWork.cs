@@ -7,7 +7,6 @@ namespace Kisanmitra.API.Repository.Implementations
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private readonly ApplicationDbContext _context;
         public IQuery Query { get; private set; }
         public IFarmer FarmerRepository { get; private set; }
         public IFarmerEquipment FarmerEquipment { get; }
@@ -23,8 +22,7 @@ namespace Kisanmitra.API.Repository.Implementations
             ConsultantLanguage = new ConsultantLanguageRepo(_context);
             FarmerEquipment = new FarmerEquipmentRepo(_context);
             FarmerLibraryResourceRepository = new FarmerLibraryResourceRepository(_context);
-            ConsultantCertification = new consultantcertificationRepo(_context);
-
+            ConsultantCertification = new ConsultantCertificationRepo(_context);
         }
 
         public async Task<int> SaveAsync()
