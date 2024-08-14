@@ -10,6 +10,7 @@ namespace Kisanmitra.API.Repository.Interface
         IFarmer FarmerRepository { get; }
         IFarmerEquipment FarmerEquipment { get; }
         IConsultantLanguage ConsultantLanguage { get; }
+        IConsultantCertification ConsultantCertification { get; }
         Task<int> SaveAsync();
         void Save();
     }
