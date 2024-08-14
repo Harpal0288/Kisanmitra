@@ -1,5 +1,6 @@
-using DataAccessLayer.DAL;
+﻿using DataAccessLayer.DAL;
 using Kisanmitra.API.Repository.Interface;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 namespace Kisanmitra.API.Repository.Implementations
 {
@@ -12,6 +13,8 @@ namespace Kisanmitra.API.Repository.Implementations
         public IConsultantLanguage ConsultantLanguage { get; }
         public IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; private set; }
         public IConsultantCertification ConsultantCertification { get; }
+        public IUser User { get; private set; }
+        public IFarmerCropRepo FarmerCropRepo { get; private set; }
         public IConsultant Consultant { get; private set; }
     
       public UnitOfWork(ApplicationDbContext context)
@@ -23,6 +26,8 @@ namespace Kisanmitra.API.Repository.Implementations
             FarmerEquipment = new FarmerEquipmentRepo(_context);
             FarmerLibraryResourceRepository = new FarmerLibraryResourceRepository(_context);
             ConsultantCertification = new ConsultantCertificationRepo(_context);
+            User = new UserRepo(_context);
+            FarmerCropRepo = new FarmerCropRepo(_context);
             Consultant = new ConsultantRepo(_context);
         }
 
@@ -30,6 +35,7 @@ namespace Kisanmitra.API.Repository.Implementations
         {
             return await _context.SaveChangesAsync();
         }
+
 
         public void Save()
         {

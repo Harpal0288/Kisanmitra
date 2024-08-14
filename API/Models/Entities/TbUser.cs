@@ -45,7 +45,7 @@ public partial class TbUser
     public string? RoleId { get; set; } = null!;
 
     [Column("inserted_date", TypeName = "datetime")]
-    public DateTime InsertedDate { get; set; }
+    public DateTime? InsertedDate { get; set; }
 
     [Column("inserted_by")]
     [StringLength(255)]
