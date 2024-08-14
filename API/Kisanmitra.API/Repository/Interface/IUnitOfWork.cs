@@ -1,4 +1,5 @@
-﻿
+﻿using System.Threading.Tasks;
+
 namespace Kisanmitra.API.Repository.Interface
 {
 
@@ -12,6 +13,7 @@ namespace Kisanmitra.API.Repository.Interface
         IConsultantLanguage ConsultantLanguage { get; }
         IConsultantCertification ConsultantCertification { get; }
         Task<int> SaveAsync();
+        IFarmerCropRepo FarmerCropRepo { get; }
         void Save();
     }
 }
