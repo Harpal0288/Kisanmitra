@@ -55,7 +55,7 @@ namespace Kisanmitra.API.Controllers
                     return BadRequest("Query data is required.");
                 }
                 _unitOfWork.Query.InsertQuery(query);
-                _unitOfWork.Save();
+                _unitOfWork.save();
                 return CreatedAtAction("GetAllQueries", new { id = query.QueryId }, query);
             }
             catch (Exception ex)
@@ -79,7 +79,7 @@ namespace Kisanmitra.API.Controllers
             try
             {
                 _unitOfWork.Query.UpdateQuery(query);
-                _unitOfWork.Save();
+                _unitOfWork.save();
                 return NoContent();
             }
             catch (Exception ex)
@@ -98,7 +98,7 @@ namespace Kisanmitra.API.Controllers
             try
             {
                 _unitOfWork.Query.DeleteQuery(queryId);
-                _unitOfWork.Save();
+                _unitOfWork.save();
                 return NoContent();
             }
             catch (Exception ex)

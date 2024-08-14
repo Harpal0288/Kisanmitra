@@ -4,6 +4,7 @@
     {
         IQuery Query { get; }
         IFarmerEquipment FarmerEquipment { get; }
-        void Save();
+        IConsultantLanguage ConsultantLanguage { get; }
+        void save();
     }
 }
