@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.DAL;
 using Kisanmitra.API.Repository.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kisanmitra.API.Repository.Implementations
 {
@@ -8,12 +9,17 @@ namespace Kisanmitra.API.Repository.Implementations
         private readonly ApplicationDbContext _context;
         public IQuery Query { get; private set; }
         public IFarmer FarmerRepository { get; private set; }
-
-        public UnitOfWork(ApplicationDbContext context)
+        public IFarmerEquipment FarmerEquipment { get; }
+        public IConsultantLanguage ConsultantLanguage { get; }
+    
+      public UnitOfWork(ApplicationDbContext context)
         {
             _context = context; _context = context ?? throw new ArgumentNullException(nameof(context));
             Query = new QueryRepo(_context);
             FarmerRepository = new FarmerRepo(_context);
+            ConsultantLanguage = new ConsultantLanguageRepo(_context);
+            FarmerEquipment = new FarmerEquipmentRepo(_context);
+
         }
 
         public async Task<int> SaveAsync()
@@ -23,7 +29,7 @@ namespace Kisanmitra.API.Repository.Implementations
 
         public void Save()
         {
-            _context.SaveChanges();
+            _dbContext.SaveChanges();
         }
 
         private bool _disposed = false;
