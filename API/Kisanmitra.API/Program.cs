@@ -3,9 +3,15 @@ using Kisanmitra.API.Repository.Implementations;
 using Kisanmitra.API.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Serilog.Events;
+using Serilog.AspNetCore;
+using Kisanmitra.API.Repository.Implementations;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Kisanmitra.API.Repository.Interface;
+using Mapster;
+//using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
@@ -21,20 +27,20 @@ builder.Host.UseSerilog();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//Register your repository and unit of work.
-builder.Services.AddScoped<IFarmerCropRepo, FarmerCropRepo>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Add services to the container.
-
+TypeAdapterConfig.GlobalSettings.Scan(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

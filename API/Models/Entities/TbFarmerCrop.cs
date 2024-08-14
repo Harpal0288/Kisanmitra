@@ -11,7 +11,7 @@ namespace Models.Entities;
 public partial class TbFarmerCrop
 {
     [Key]
-    [Column("farmar_id")]
+    [Column("farmer_id")]
     [StringLength(255)]
     public string FarmarId { get; set; } = null!;
 
