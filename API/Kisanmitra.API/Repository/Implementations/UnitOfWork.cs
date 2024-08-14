@@ -29,7 +29,7 @@ namespace Kisanmitra.API.Repository.Implementations
 
         public void Save()
         {
-            _dbContext.SaveChanges();
+            _context.SaveChanges();
         }
 
         private bool _disposed = false;
