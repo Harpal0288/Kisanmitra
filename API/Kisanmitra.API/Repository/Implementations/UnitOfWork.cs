@@ -1,5 +1,5 @@
-﻿using DataAccessLayer.DAL;
-using Kisanmitra.API.Repository.Interface;
+﻿using Kisanmitra.API.Repository.Interface;
+using DataAccessLayer.DAL;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kisanmitra.API.Repository.Implementations
@@ -11,16 +11,18 @@ namespace Kisanmitra.API.Repository.Implementations
         public IFarmer FarmerRepository { get; private set; }
         public IFarmerEquipment FarmerEquipment { get; }
         public IConsultantLanguage ConsultantLanguage { get; }
+        public IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; }
     
       public UnitOfWork(ApplicationDbContext context)
         {
-            _context = context; _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             Query = new QueryRepo(_context);
             FarmerRepository = new FarmerRepo(_context);
             ConsultantLanguage = new ConsultantLanguageRepo(_context);
             FarmerEquipment = new FarmerEquipmentRepo(_context);
-
+            FarmerLibraryResourceRepository = new FarmerLibraryResourceRepository(_context);
         }
+
 
         public async Task<int> SaveAsync()
         {
