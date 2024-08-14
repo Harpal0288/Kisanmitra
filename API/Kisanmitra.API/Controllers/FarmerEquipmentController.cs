@@ -154,7 +154,7 @@ namespace Kisanmitra.API.Controllers
                 Log.Information("Farmer Equipment added successfully.");
                 return Ok(new { status = 201, message = "Farmer Equipment added successfully." });
             }
-            catch (InvalidOperationException)
+            catch (Ex)
             {
                 Log.Warning("Data already exists.");
                 return Conflict(new { status = 409, message = "Data already exists." });

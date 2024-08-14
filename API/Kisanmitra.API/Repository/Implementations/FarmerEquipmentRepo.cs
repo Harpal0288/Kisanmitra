@@ -110,6 +110,12 @@ namespace Kisanmitra.API.Repository.Implementations
         {
             try
             {
+                var data = await GetFarmerEquipmentById(farmerEquipment.FarmerId, farmerEquipment.EquipmentId);
+                if (data != null)
+                {
+                    throw new Exception("User already exist");
+                }
+
                 var parameters = new List<SqlParameter>
                 {
                     new SqlParameter("@equipmentId", farmerEquipment.EquipmentId),
