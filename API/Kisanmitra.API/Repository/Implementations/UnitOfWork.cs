@@ -8,9 +8,9 @@ namespace Kisanmitra.API.Repository.Implementations
         private readonly ApplicationDbContext _context;
         public IQuery Query { get; private set; }
         public IFarmer FarmerRepository { get; private set; }
-        public IFarmerEquipment FarmerEquipment { get; }
+        public IFarmerEquipment FarmerEquipment { get; private set; }
         public IConsultantLanguage ConsultantLanguage { get; }
-        public IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; }
+        public IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; private set; }
         public IConsultantCertification ConsultantCertification { get; }
         public IConsultant Consultant { get; private set; }
     
