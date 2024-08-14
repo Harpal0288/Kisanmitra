@@ -109,6 +109,7 @@ namespace Kisanmitra.API.Controllers
                 _unitOfWork.Query.DeleteQuery(queryId);
                 _unitOfWork.Save();
                 return Ok(new { status = 200, message = "Query deleted successfully." });
+
             }
             catch (Exception ex)
             {
