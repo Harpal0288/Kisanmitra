@@ -6,24 +6,25 @@ namespace Kisanmitra.API.Repository.Implementations
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDbContext _dbContext;
-
-        public IQuery Query { get; }
+        private readonly ApplicationDbContext _context;
+        public IQuery Query { get; private set; }
+        public IFarmer FarmerRepository { get; private set; }
         public IFarmerEquipment FarmerEquipment { get; }
         public IConsultantLanguage ConsultantLanguage { get; }
     
       public UnitOfWork(ApplicationDbContext context)
         {
-            _context = context;
+            _context = context; _context = context ?? throw new ArgumentNullException(nameof(context));
             Query = new QueryRepo(_context);
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            ConsultantLanguage = new ConsultantLanguageRepo(context);
+            FarmerRepository = new FarmerRepo(_context);
+            ConsultantLanguage = new ConsultantLanguageRepo(_context);
+            FarmerEquipment = new FarmerEquipmentRepo(_context);
 
-        public UnitOfWork(ApplicationDbContext dbContext)
+        }
+
+        public async Task<int> SaveAsync()
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            Query = new QueryRepo(dbContext);
-            FarmerEquipment = new FarmerEquipmentRepo(dbContext);
+            return await _context.SaveChangesAsync();
         }
 
         public void Save()
@@ -31,9 +32,24 @@ namespace Kisanmitra.API.Repository.Implementations
             _dbContext.SaveChanges();
         }
 
-        public void save()
+        private bool _disposed = false;
+
+        protected virtual void Dispose(bool disposing)
         {
-            throw new NotImplementedException();
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

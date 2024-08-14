@@ -1,10 +1,12 @@
 ﻿namespace Kisanmitra.API.Repository.Interface
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IQuery Query { get; }
+        IFarmer FarmerRepository { get; }
         IFarmerEquipment FarmerEquipment { get; }
         IConsultantLanguage ConsultantLanguage { get; }
-        void save();
+        Task<int> SaveAsync();
+        void Save();
     }
 }

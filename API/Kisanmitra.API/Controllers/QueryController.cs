@@ -61,8 +61,10 @@ namespace Kisanmitra.API.Controllers
                 }
                 var query = queryDto.Adapt<TbQuery>();
                 _unitOfWork.Query.InsertQuery(query);
-                _unitOfWork.Save();
+
+                await _unitOfWork.SaveAsync();
                 return CreatedAtAction("GetAllQueries", new { id = query.QueryId }, queryDto);
+
             }
             catch (Exception ex)
             {
@@ -87,8 +89,10 @@ namespace Kisanmitra.API.Controllers
             {
                 var query = queryDto.Adapt<TbQuery>();
                 _unitOfWork.Query.UpdateQuery(query);
-                _unitOfWork.Save();
+
+                await _unitOfWork.SaveAsync();
                 return Ok(new { status = 200, message = "Query updated successfully." });
+
             }
             catch (Exception ex)
             {
