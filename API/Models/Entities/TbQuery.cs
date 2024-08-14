@@ -54,11 +54,11 @@ public partial class TbQuery
 
     [ForeignKey("FarmerId")]
     [InverseProperty("TbQueries")]
-    public virtual TbFarmer Farmer { get; set; } = null!;
+    public virtual TbFarmer? Farmer { get; set; } = null!;
 
     [InverseProperty("Query")]
-    public virtual ICollection<TbAnswer> TbAnswers { get; set; } = new List<TbAnswer>();
+    public virtual ICollection<TbAnswer>? TbAnswers { get; set; } = new List<TbAnswer>();
 
     [InverseProperty("Query")]
-    public virtual ICollection<TbRating> TbRatings { get; set; } = new List<TbRating>();
+    public virtual ICollection<TbRating>? TbRatings { get; set; } = new List<TbRating>();
 }

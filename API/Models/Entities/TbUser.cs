@@ -14,23 +14,23 @@ public partial class TbUser
     [Key]
     [Column("user_id")]
     [StringLength(255)]
-    public string UserId { get; set; } = null!;
+    public string? UserId { get; set; } = null!;
 
     [Column("user_name")]
     [StringLength(255)]
-    public string UserName { get; set; } = null!;
+    public string? UserName { get; set; } = null!;
 
     [Column("aadhar_number")]
     [StringLength(255)]
-    public string AadharNumber { get; set; } = null!;
+    public string? AadharNumber { get; set; } = null!;
 
     [Column("email")]
     [StringLength(100)]
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; } = null!;
 
     [Column("phone_number")]
     [StringLength(255)]
-    public string PhoneNumber { get; set; } = null!;
+    public string? PhoneNumber { get; set; } = null!;
 
     [Column("address")]
     [StringLength(255)]
@@ -38,29 +38,29 @@ public partial class TbUser
 
     [Column("password")]
     [StringLength(255)]
-    public string Password { get; set; } = null!;
+    public string? Password { get; set; } = null!;
 
     [Column("role_id")]
     [StringLength(255)]
-    public string RoleId { get; set; } = null!;
+    public string? RoleId { get; set; } = null!;
 
     [Column("inserted_date", TypeName = "datetime")]
     public DateTime InsertedDate { get; set; }
 
     [Column("inserted_by")]
     [StringLength(255)]
-    public string InsertedBy { get; set; } = null!;
+    public string? InsertedBy { get; set; } = null!;
 
     [Column("updated_date", TypeName = "datetime")]
-    public DateTime UpdatedDate { get; set; }
+    public DateTime? UpdatedDate { get; set; }
 
     [Column("updated_by")]
     [StringLength(255)]
-    public string UpdatedBy { get; set; } = null!;
+    public string? UpdatedBy { get; set; } = null!;
 
     [ForeignKey("RoleId")]
     [InverseProperty("TbUsers")]
-    public virtual TbRole Role { get; set; } = null!;
+    public virtual TbRole? Role { get; set; } = null!;
 
     [InverseProperty("User")]
     public virtual ICollection<TbAdmin> TbAdmins { get; set; } = new List<TbAdmin>();

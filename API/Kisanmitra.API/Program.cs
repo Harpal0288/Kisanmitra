@@ -1,5 +1,7 @@
 
 using DataAccessLayer.DAL;
+using Kisanmitra.API.Repository.Implementations;
+using Kisanmitra.API.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -10,7 +12,6 @@ using Kisanmitra.API.Repository.Interface;
 using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
@@ -35,9 +36,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
