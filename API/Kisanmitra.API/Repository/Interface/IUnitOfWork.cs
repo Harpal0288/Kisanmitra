@@ -8,7 +8,6 @@ namespace Kisanmitra.API.Repository.Interface
         IFarmerEquipment FarmerEquipment { get; }
         IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; }
         IFarmer FarmerRepository { get; }
-        IFarmerEquipment FarmerEquipment { get; }
         IConsultantLanguage ConsultantLanguage { get; }
         IConsultantCertification ConsultantCertification { get; }
         Task<int> SaveAsync();
