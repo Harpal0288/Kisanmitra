@@ -1,7 +1,6 @@
 ﻿namespace Kisanmitra.API.FluentValidation
 {
-    public class QueryValidator
+    public class ConsultantLanguageValidator
     {
-
     }
 }

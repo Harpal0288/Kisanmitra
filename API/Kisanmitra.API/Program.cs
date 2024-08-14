@@ -26,15 +26,16 @@ builder.Host.UseSerilog();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register your repositories
-builder.Services.AddScoped<IConsultantCertification, ConsultantCertificationRepo>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-//TypeAdapterConfig.GlobalSettings.Scan(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddControllers();
 
-// Configure Swagger/OpenAPI
+// Add services to the container.
+TypeAdapterConfig.GlobalSettings.Scan(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

@@ -3,10 +3,10 @@ namespace Kisanmitra.API.Repository.Interface
 {
     public interface IQuery
     {
-        List<TbQuery> GetAllQueries();
-        void InsertQuery(TbQuery query);
-        void UpdateQuery(TbQuery query);
-        void DeleteQuery(string queryId);
-        List<TbQuery> GetQueriesByFarmerId(string farmerId);
+        Task<List<TbQuery>> GetAllQueries(int page, int pageSize);
+        Task InsertQuery(TbQuery query);
+        Task UpdateQuery(TbQuery query);
+        Task DeleteQuery(string queryId);
+        Task<List<TbQuery>> GetQueriesByFarmerId(string farmerId);
     }
 }
