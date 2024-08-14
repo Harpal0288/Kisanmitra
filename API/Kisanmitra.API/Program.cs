@@ -1,4 +1,6 @@
 using DataAccessLayer.DAL;
+using Kisanmitra.API.Repository.Implementations;
+using Kisanmitra.API.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -18,6 +20,10 @@ builder.Host.UseSerilog();
 // Register DbContexts
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Register your repository and unit of work.
+builder.Services.AddScoped<IFarmerCropRepo, FarmerCropRepo>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Add services to the container.
 
