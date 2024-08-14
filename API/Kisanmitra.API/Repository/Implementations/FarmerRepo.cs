@@ -51,23 +51,7 @@ namespace Kisanmitra.API.Repository.Implementations
             return (result, errorMessage);
         }
 
-        public async Task<(TbUser? User, string? ErrorMessage)> GetUserById(string userId)
-        {
-            var errorMessageParam = new SqlParameter("@error", SqlDbType.NVarChar, 1000)
-            {
-                Direction = ParameterDirection.Output
-            };
 
-            var users = await _context.TbUsers
-                .FromSqlRaw("EXEC sp_GetUserById @user_id, @error OUTPUT",
-                    new SqlParameter("@user_id", userId),
-                    errorMessageParam)
-                .ToListAsync();
-
-            var user = users.FirstOrDefault();
-            string? errorMessage = errorMessageParam.Value != DBNull.Value ? errorMessageParam.Value.ToString() : null;
-            return (user, errorMessage);
-        }
 
         public async Task<(TbFarmer? Farmer, string? ErrorMessage)> GetFarmerById(string farmerId)
         {
@@ -87,30 +71,7 @@ namespace Kisanmitra.API.Repository.Implementations
             return (farmer, errorMessage);
         }
 
-        public async Task<(int Result, string? ErrorMessage)> UpdateUser(TbUser user)
-        {
-            var errorMessageParam = new SqlParameter("@error_message", SqlDbType.NVarChar, 1000)
-            {
-                Direction = ParameterDirection.Output
-            };
 
-            var result = await _context.Database.ExecuteSqlRawAsync(
-                "EXEC sp_SingleUpdateUser @user_id, @user_name, @aadhar_number, @user_email, @phone_number, @user_address, @user_password, @role_id, @user_updated_by, @error_message OUTPUT",
-                new SqlParameter("@user_id", user.UserId ?? (object)DBNull.Value),
-                new SqlParameter("@user_name", user.UserName ?? (object)DBNull.Value),
-                new SqlParameter("@aadhar_number", user.AadharNumber ?? (object)DBNull.Value),
-                new SqlParameter("@user_email", user.Email ?? (object)DBNull.Value),
-                new SqlParameter("@phone_number", user.PhoneNumber ?? (object)DBNull.Value),
-                new SqlParameter("@user_address", user.Address ?? (object)DBNull.Value),
-                new SqlParameter("@user_password", user.Password ?? (object)DBNull.Value),
-                new SqlParameter("@role_id", user.RoleId ?? (object)DBNull.Value),
-                new SqlParameter("@user_updated_by", user.UpdatedBy ?? (object)DBNull.Value),
-                errorMessageParam
-            );
-
-            string? errorMessage = errorMessageParam.Value != DBNull.Value ? errorMessageParam.Value.ToString() : null;
-            return (result, errorMessage);
-        }
 
         public async Task<(int Result, string? ErrorMessage)> UpdateFarmer(TbFarmer farmer)
         {

@@ -13,6 +13,7 @@ namespace Kisanmitra.API.Repository.Implementations
         public IConsultantLanguage ConsultantLanguage { get; }
         public IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; }
         public IConsultantCertification ConsultantCertification { get; }
+        public IUser User { get; private set; }
     
       public UnitOfWork(ApplicationDbContext context)
         {
@@ -23,6 +24,7 @@ namespace Kisanmitra.API.Repository.Implementations
             FarmerEquipment = new FarmerEquipmentRepo(_context);
             FarmerLibraryResourceRepository = new FarmerLibraryResourceRepository(_context);
             ConsultantCertification = new ConsultantCertificationRepo(_context);
+            User = new UserRepo(_context);
         }
 
         public async Task<int> SaveAsync()
