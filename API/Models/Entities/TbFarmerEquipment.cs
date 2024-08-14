@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Models.Entities;
@@ -25,20 +26,22 @@ public partial class TbFarmerEquipment
 
     [Column("inserted_by")]
     [StringLength(255)]
-    public string InsertedBy { get; set; } = null!;
+    public string? InsertedBy { get; set; } = null!;
 
     [Column("updated_date", TypeName = "datetime")]
     public DateTime UpdatedDate { get; set; }
 
     [Column("updated_by")]
     [StringLength(255)]
-    public string UpdatedBy { get; set; } = null!;
+    public string? UpdatedBy { get; set; } = null!;
 
     [ForeignKey("EquipmentId")]
     [InverseProperty("TbFarmerEquipments")]
-    public virtual TbEquipment Equipment { get; set; } = null!;
+    [JsonIgnore]
+    public virtual TbEquipment? Equipment { get; set; } = null!;
 
     [ForeignKey("FarmerId")]
     [InverseProperty("TbFarmerEquipments")]
-    public virtual TbFarmer Farmer { get; set; } = null!;
+    [JsonIgnore]
+    public virtual TbFarmer? Farmer { get; set; } = null!;
 }
