@@ -12,7 +12,7 @@ namespace Kisanmitra.API.Repository.Implementations
         public IFarmerEquipment FarmerEquipment { get; }
         public IConsultantLanguage ConsultantLanguage { get; }
         public IFarmerLibraryResourceRepository FarmerLibraryResourceRepository { get; }
-        public IConsultantCertification ConsultantCertification { get; }
+        public IConsultantCertification ConsultantCertification { get; private set; }
     
       public UnitOfWork(ApplicationDbContext context)
         {
